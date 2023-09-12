@@ -94,7 +94,25 @@ def dirSearch(target_url):
 dirSearch("http://192.168.107.128/")
 
 #출력
-print("Filename: \n===========")
+
+dirSearch("http://192.168.107.128/")
+
+# Extract and print directory names separately
+print("Directory Names:\n===========")
+directory_names = set()
+
+for path_with_extension, _ in refer_dict.items():
+    path_parts = path_with_extension.split('/')
+    if len(path_parts) > 1:
+        directory_name = '/'.join(path_parts[:-1]) + '/'
+        # Check if the directory name is in a valid format
+        if not any(char in r":*\"<>" for char in directory_name):
+            directory_names.add(directory_name)
+
+for dirname in directory_names:
+    print(f"->{dirname}")
+
+print("\nFilename: \n===========")
 web_extensions = {'.html', '.htm', '.php', '.jsp', '.asp', '.aspx',
                   '.css', '.js',
                   '.png', '.jpg', '.jpeg', '.svg'}
@@ -111,3 +129,4 @@ for path_with_extension, references in refer_dict.items():
             unique_references.add((full_url, status_code))
         for ref_info in unique_references:
             print(f"refer) {ref_info[0]}, Status Code: {ref_info[1]}")
+
