@@ -93,12 +93,9 @@ def dirSearch(target_url):
 #타깃 URL
 dirSearch("http://192.168.107.128/")
 
-#출력
-
-dirSearch("http://192.168.107.128/")
-
 #디렉터리로 추정되는 것을 따로 추출하여 출력
-print("Directory Names:\n===========")
+print("Directory Names:")
+print("===========")
 directory_names = set()
 
 for path_with_extension, _ in refer_dict.items():
@@ -112,7 +109,8 @@ for path_with_extension, _ in refer_dict.items():
 for dirname in directory_names:
     print(f"->{dirname}")
 
-print("\nFilename: \n===========")
+print("\nFilename:")
+print("===========",end='')
 web_extensions = {'.html', '.htm', '.php', '.jsp', '.asp', '.aspx',
                   '.css', '.js',
                   '.png', '.jpg', '.jpeg', '.svg'}
@@ -129,4 +127,3 @@ for path_with_extension, references in refer_dict.items():
             unique_references.add((full_url, status_code))
         for ref_info in unique_references:
             print(f"refer) {ref_info[0]}, Status Code: {ref_info[1]}")
-
