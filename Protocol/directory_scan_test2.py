@@ -92,12 +92,15 @@ def dirSearch(target_url):
                     path_with_extension = urlparse(full_url).path
                     refer_dict.setdefault(path_with_extension, []).append((full_url, response.status_code))
 
+    # 디렉토리 이름과 확장자 목록을 반환
+    return list(directory_names), web_extensions  
 
 #main에서 매개변수로 전달된 URL을 받아 디렉토리 스캔 수행
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Error code: URL[1] 인자 전달받지 못함")
+        print("Error code: URL 인자 전달받지 못함")
         sys.exit(1)
+
     url = sys.argv[1]
 
     # 파싱 및 스캔을 실행
@@ -110,8 +113,8 @@ if __name__ == "__main__":
     #서버 디렉터리(폴더,파일) 탐색 함수
     dirSearch(url)
 
-    # print("Directory Names:")
-    # print("===========")
+    print("Directory Names:")
+    print("===========")
     directory_names = set()
 
     for path_with_extension, _ in refer_dict.items():
@@ -123,24 +126,19 @@ if __name__ == "__main__":
                 directory_names.add(directory_name)
 
     for dirname in directory_names:
-        print(f"{dirname}")
-        #print(f"->{dirname}")
+        print(f"->{dirname}")
 
-    # print("\nFilename:")
-    # print("===========")
+    print("\nFilename:")
+    print("===========")
     web_extensions = {'.html', '.htm', '.php', '.jsp', '.asp', '.aspx',
                     '.css', '.js',
                     '.png', '.jpg', '.jpeg', '.svg'}
 
-    #main으로 리턴해줄 해당 디렉토리 경로
-    re_path = []
     for path_with_extension, references in refer_dict.items():
         _, ext = os.path.splitext(path_with_extension)
 
         if ext in web_extensions:
-            re_path.append(path_with_extension)
-            print(f"{path_with_extension}")
-            #print(f"-> {path_with_extension}")
+            print(f"-> {path_with_extension}")
             unique_references = set()  #set 타입을 사용하여 고유 참조 확인
             # for ref_info in references:
             #     full_url = ref_info[0]
@@ -148,3 +146,5 @@ if __name__ == "__main__":
             #     unique_references.add((full_url, status_code))
             # for ref_info in unique_references:
             #     print(f"refer) {ref_info[0]}, Status Code: {ref_info[1]}")
+
+    print(directory_scan_test2.py)

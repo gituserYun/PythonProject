@@ -2,10 +2,13 @@ import requests
 from bs4 import BeautifulSoup
 import re
 from urllib.parse import urljoin, urlparse
-import os, sys
+import os
 
 #서버 디렉터리(폴더,파일) 탐색
 def dirSearch(target_url):
+    #방문 url 추가
+    visited.add(target_url)
+
     try:
         response = requests.get(target_url, timeout=5)
         response.raise_for_status()  #에러 체크
@@ -17,9 +20,6 @@ def dirSearch(target_url):
         #print(f"Invalid URL: {target_url}")
         return
 
-    #방문 url 추가
-    visited.add(target_url)
-
     #페이지의 HTML 파싱
     soup = BeautifulSoup(response.text, 'html.parser')
 
@@ -27,6 +27,7 @@ def dirSearch(target_url):
     if target_url.startswith(base_url):
         #태그 검사 - script(location.href, src), a(href), form(action), link(href), img(src)
         for tag in soup.find_all(['script', 'a', 'form', 'link', 'img']):
+
             if tag.name == 'script':
                 if tag.string:
                     match_location = re.search(r'location.href\s*=\s*[\'"](.*?)[\'"]', tag.string)
@@ -92,59 +93,52 @@ def dirSearch(target_url):
                     path_with_extension = urlparse(full_url).path
                     refer_dict.setdefault(path_with_extension, []).append((full_url, response.status_code))
 
+#파일 경로 및 확장된 경로가 그룹화된 참조를 저장하는 사전
+refer_dict = {}
+visited = set()
 
-#main에서 매개변수로 전달된 URL을 받아 디렉토리 스캔 수행
-if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Error code: URL[1] 인자 전달받지 못함")
-        sys.exit(1)
-    url = sys.argv[1]
+url = "http://192.168.107.128/"
+parsed_url = urlparse(url)
+#scheme와 netloc을 조합하여 원하는 부분 추출
+base_url = parsed_url.scheme + "://" + parsed_url.netloc
 
-    # 파싱 및 스캔을 실행
-    parsed_url = urlparse(url)
-    base_url = parsed_url.scheme + "://" + parsed_url.netloc
-    #파일 경로 및 확장된 경로가 그룹화된 참조를 저장하는 사전
-    refer_dict = {}
-    visited = set()
-    
-    #서버 디렉터리(폴더,파일) 탐색 함수
-    dirSearch(url)
+#타깃 URL 폴더 및 파일을 탐색하는 함수
+dirSearch(url)
 
-    # print("Directory Names:")
-    # print("===========")
-    directory_names = set()
+# print(refer_dict)
+# print(f"\n\n{visited}\n")
 
-    for path_with_extension, _ in refer_dict.items():
-        path_parts = path_with_extension.split('/')
-        if len(path_parts) > 1:
-            directory_name = '/'.join(path_parts[:-1]) + '/'
-            #디렉터리 이름이 올바른 형식인지 검사
-            if not any(char in r":*\"<>" for char in directory_name):
-                directory_names.add(directory_name)
+#디렉터리로 추정되는 것을 따로 추출하여 출력
+print("Directory Names:")
+print("===========")
+directory_names = set()
 
-    for dirname in directory_names:
-        print(f"{dirname}")
-        #print(f"->{dirname}")
+for path_with_extension, _ in refer_dict.items():
+    path_parts = path_with_extension.split('/')
+    if len(path_parts) > 1:
+        directory_name = '/'.join(path_parts[:-1]) + '/'
+        #디렉터리 이름이 올바른 형식인지 검사
+        if not any(char in r":*\"<>" for char in directory_name):
+            directory_names.add(directory_name)
 
-    # print("\nFilename:")
-    # print("===========")
-    web_extensions = {'.html', '.htm', '.php', '.jsp', '.asp', '.aspx',
-                    '.css', '.js',
-                    '.png', '.jpg', '.jpeg', '.svg'}
+for dirname in directory_names:
+    print(f"->{dirname}")
 
-    #main으로 리턴해줄 해당 디렉토리 경로
-    re_path = []
-    for path_with_extension, references in refer_dict.items():
-        _, ext = os.path.splitext(path_with_extension)
+print("\nFilename:")
+print("===========")
+web_extensions = {'.html', '.htm', '.php', '.jsp', '.asp', '.aspx',
+                  '.css', '.js',
+                  '.png', '.jpg', '.jpeg', '.svg'}
 
-        if ext in web_extensions:
-            re_path.append(path_with_extension)
-            print(f"{path_with_extension}")
-            #print(f"-> {path_with_extension}")
-            unique_references = set()  #set 타입을 사용하여 고유 참조 확인
-            # for ref_info in references:
-            #     full_url = ref_info[0]
-            #     status_code = ref_info[1]
-            #     unique_references.add((full_url, status_code))
-            # for ref_info in unique_references:
-            #     print(f"refer) {ref_info[0]}, Status Code: {ref_info[1]}")
+for path_with_extension, references in refer_dict.items():
+    _, ext = os.path.splitext(path_with_extension)
+
+    if ext in web_extensions:
+        print(f"-> {path_with_extension}")
+        unique_references = set()  #set 타입을 사용하여 고유 참조 확인
+        # for ref_info in references:
+        #     full_url = ref_info[0]
+        #     status_code = ref_info[1]
+        #     unique_references.add((full_url, status_code))
+        # for ref_info in unique_references:
+        #     print(f"refer) {ref_info[0]}, Status Code: {ref_info[1]}")
