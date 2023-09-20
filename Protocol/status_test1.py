@@ -3,11 +3,13 @@ from urllib.parse import urlsplit
 
 
 #test_url: "http://192.168.107.128/"
-target_url = "http://192.168.107.130/main.jsp"
+target_url = "http://192.168.107.128/main.jsp"
 response = requests.get(target_url)
 
 #GET / POST
 #data_type = response.request.method
+
+print(f"text:\n {response.text}")
 
 #status code
 st_code = response.status_code

@@ -48,12 +48,12 @@ def dirScan(url):
 
     return directory_names, file_names
 
-# def sqlI(url, directories, files):
-#     dir_str = json.dumps(directories)
-#     file_str = json.dumps(files)
+def sqlI(url, files):
+    #dir_str = json.dumps(directories)
+    file_str = json.dumps(files)
 
-#     subprocess.call(['python', '.\\VulnerabilityList\\sql_injecton.py', url, dir_str, file_str])
-#     print_blue("\n[*] SQL 인젝션 항목 점검\n")
+    subprocess.call(['python', '.\\VulnerabilityList\\sql_injection_test1.py',url ,file_str])
+    print_blue("\n[*] SQL 인젝션 항목 점검\n")
 
 if __name__ == '__main__':
     print_blue("\n==================================================================================\n")
@@ -79,6 +79,11 @@ if __name__ == '__main__':
     directories, files = dirScan(url)
     #print(directories)
     #print(files)
+    check_url = []
+    for file in files:
+        full_url = "{}/{}".format(url.rstrip('/'), file.lstrip('/'))
+        check_url.append(full_url)
+    #print(f"check_url: {check_url}")
 
     #점검항목1: SQL 인젝션(SQL Injection)
-    #sqlI(url, directories, files)
+    sqlI(url, check_url)
