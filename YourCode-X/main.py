@@ -14,10 +14,10 @@ print_white = lambda x : cprint(x, "white")
 
 def dirScan(url):
     #Linux에서 동작
-    #subprocess.call(['../example/test.py'])
+    #output = subprocess.check_output(['python3', './Protocol/directory_scan.py', url])
 
     #Windows에서 동작
-    output = subprocess.check_output(['python', '.\\Protocol\\directory_scan.py', url])
+    output = subprocess.check_output(['python', './Protocol/directory_scan.py', url])
     output_str = output.decode('utf-8')
     path_list = output_str.split('\r\n')
     #print(f"test output: {path_list}")
@@ -52,7 +52,8 @@ def sqlI(url, files):
     #dir_str = json.dumps(directories)
     file_str = json.dumps(files)
 
-    subprocess.call(['python', '.\\VulnerabilityList\\sql_injection_test1.py',url ,file_str])
+    #subprocess.call(['python3', './VulnerabilityList/sql_injection_test1.py',url ,file_str])
+    subprocess.call(['python', './VulnerabilityList/sql_injection_test1.py',url ,file_str])
     print_blue("\n[*] SQL 인젝션 항목 점검\n")
 
 if __name__ == '__main__':
