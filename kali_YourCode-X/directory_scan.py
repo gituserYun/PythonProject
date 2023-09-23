@@ -146,6 +146,7 @@ if __name__ == "__main__":
             if not any(char in r":*\"<>" for char in directory_name):
                 directory_names.add(directory_name)
     for dirname in directory_names:
+        print(f"{dirname}")
         print(f"DIR: {dirname}", file=sys.stdout)
         #print(f"->{dirname}")
 
@@ -157,6 +158,7 @@ if __name__ == "__main__":
         _, ext = os.path.splitext(path_with_extension)
         if ext in web_extensions:
             re_path.append(path_with_extension)
+            print(f"{path_with_extension}")
             print(f"FILE: {path_with_extension}", file=sys.stdout)
             unique_references = set()  #set 타입을 사용하여 고유 참조 확인
             #Spider Scan에서 그대로 사용되었던 참조 url 경로들 정보 확인 가능

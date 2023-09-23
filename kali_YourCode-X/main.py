@@ -17,8 +17,8 @@ def dirScan(url):
     #Windows에서 동작
     #output = subprocess.check_output(['python', './Protocol/directory_scan.py', url])
 
-    #directory_scan.py의 실행 결과에서 추출한 정보를 가져옴
-    extracted_info = result.stdout
+    #directory_scan.py의 표준 출력 결과에서 추출한 정보를 가져옴
+    extracted_info = output.stdout
 
     #출력 디렉토리 이름
     print("Directory Names:")
