@@ -26,15 +26,15 @@ def dirSearch(target_url):
     #기본 url (스키마 + 네트워크 IP)
     if target_url.startswith(base_url):
         #태그 검사 - script(location.href, src), a(href), form(action), link(href), img(src)
-        for tag in soup.find_all(['script', 'a', 'form', 'link', 'img']):
+        for tag in soup.find_all(['script', 'a', 'form', 'link', 'img', 'area', 'meta', 'embed', 'object']):
             if tag.name == 'script':
                 if tag.string:
-                    match_location = re.search(r'location.href\s*=\s*[\'"](.*?)[\'"]', tag.string)
-                    if match_location and not match_location.group(1).startswith('#'):
-                        full_url = urljoin(target_url, match_location.group(1))
+                    match_location = re.search(r'(window\s*\.\s*)?location\s*(\.\s*href|\.\s*replace)\s*(=\s*[\'"](.*?)[\'"]|\([\'"](.*?)[\'"]\))', tag.string, re.IGNORECASE)
+                    if match_location and (match_location.group(4) or match_location.group(5)):
+                        full_url = urljoin(target_url, match_location.group(4) or match_location.group(5))
                         #print(f"script_location: {full_url}")
-                        if full_url not in visited:
-                            dirSearch(full_url)  #리다이렉트된 URL 재귀 호출
+                        if not full_url.startswith('#') and full_url not in visited:
+                            dirSearch(full_url) #리다이렉트된 URL 재귀 호출
 
                 match_src = tag.get('src')
                 if match_src and not 'ionicons' in match_src:
@@ -91,6 +91,31 @@ def dirSearch(target_url):
                     #print(f"img_src: {full_url}")
                     path_with_extension = urlparse(full_url).path
                     refer_dict.setdefault(path_with_extension, []).append((full_url, response.status_code))
+            #area 태그 관련(이미지 맵의 영역을 정의)
+            elif tag.name == 'area':
+                href_value = tag.get('href')
+                if href_value and not href_value.startswith('#'):
+                    full_url = urljoin(target_url, href_value)
+                    path_with_extension = urlparse(full_url).path
+                    refer_dict.setdefault(path_with_extension, []).append((full_url, response.status_code))
+            #meta 태그 관련(웹 페이지에 대한 정보를 포함한 곳, 특정 상황 리다이렉션 용도)
+            elif tag.name == 'meta':
+                http_equiv_value = tag.get('http-equiv')
+                content_value = tag.get('content')
+                if http_equiv_value and http_equiv_value.lower() == "refresh" and content_value:
+                    match_meta_refresh = re.search(r'url\s*=\s*(.*)$', content_value.strip(), re.IGNORECASE)
+                    if match_meta_refresh:
+                        full_url = urljoin(target_url, match_meta_refresh.group(1))
+                        path_with_extension = urlparse(full_url).path
+                        refer_dict.setdefault(path_with_extension, []).append((full_url, response.status_code))
+            #embed, object 태그 관련(외부 멀티미디어 콘텐츠)
+            elif tag.name in ['embed', 'object']:
+                data_or_src_attr_val = tag.get('data') or tag.get('src')
+                if data_or_src_attr_val and not data_or_src_attr_val.startswith('#'):
+                    full_url = urljoin(target_url,data_or_src_attr_val)
+                    path_with_extension = urlparse(full_url).path
+                    refer_dict.setdefault(path_with_extension, []).append((full_url, response.status_code))
+
 
 
 #main에서 매개변수로 전달된 URL을 받아 디렉토리 스캔 수행
