@@ -38,4 +38,4 @@ if __name__ == '__main__':
     print("")
 
     #디렉토리 스캔 함수
-    directories, files = dirScan(url)
+    dirScan(url)
