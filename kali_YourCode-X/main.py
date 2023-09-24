@@ -57,8 +57,12 @@ if __name__ == '__main__':
     
     url = input("URL을 입력: ")
     print("")
-
     #디렉토리 스캔 함수
     directories, files = dirScan(url)
-    print(directories)
-    print(files)
+
+    check_url = []
+    for file in files:
+        full_url = "{}/{}".format(url.rstrip('/'), file.lstrip('/'))
+        check_url.append(full_url)
+    #print(f"check_url: {check_url}")
+    
