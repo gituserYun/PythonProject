@@ -39,10 +39,10 @@ def dirScan(url):
 
     return directory_names, file_names
 
-def sqlI(check_url):
+def sqlI(url, check_url):
     urls_json = json.dumps(check_url)
-    subprocess.call(['python3','./sql_injection.py', urls_json])
-    # output = subprocess.run(['python3', './sql_injection.py', urls_json], capture_output=True, text=True)
+    subprocess.call(['python3', './sql_injection.py' ,url ,urls_json])
+    # output = subprocess.run(['python3', './sql_injection.py',url,urls_json], capture_output=True, text=True)
     # print(output.stdout)
     print_blue("\n[*] SQL 인젝션 항목 점검\n")  
 
