@@ -14,7 +14,7 @@ print_white = lambda x : cprint(x, "white")
 
 def dirScan(url):
     #Linux에서 동작
-    output = subprocess.run(['python3', './directory_scan.py', url], capture_output=True, text=True)
+    output = subprocess.run(['python3', '../Scan/directory_scan.py', url], capture_output=True, text=True)
     #directory_scan.py의 표준 출력 결과에서 추출한 정보를 가져옴
     extracted_info = output.stdout
     directory_names = []
@@ -41,7 +41,7 @@ def dirScan(url):
 
 def sqlI(url, check_url):
     urls_json = json.dumps(check_url)
-    subprocess.call(['python3', './sql_injection.py' ,url ,urls_json])
+    subprocess.call(['python3', '../VulnerabilityList/SQLI/sql_injection.py' ,url ,urls_json])
     # output = subprocess.run(['python3', './sql_injection.py',url,urls_json], capture_output=True, text=True)
     # print(output.stdout)
     print_blue("\n[*] SQL 인젝션 항목 점검\n")  
