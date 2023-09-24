@@ -14,7 +14,7 @@ print_white = lambda x : cprint(x, "white")
 
 def dirScan(url):
     # #Windows에서 동작
-    output = subprocess.run(['python', './Windows_YourCode-X/directory_scan.py', url], capture_output=True, text=True)
+    output = subprocess.run(['python', '../Scan/directory_scan.py', url], capture_output=True, text=True)
     extracted_info = output.stdout
     directory_names = []
     file_names = []
@@ -40,7 +40,7 @@ def dirScan(url):
 
 def sqlI(url, check_url):
     urls_json = json.dumps(check_url)
-    subprocess.call(['python', './Windows_YourCode-X/sql_injection.py' ,url ,urls_json])
+    subprocess.call(['python', '../VulnerabilityList/SQLI/sql_injection.py' ,url ,urls_json])
     
 
 if __name__ == '__main__':
