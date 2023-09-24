@@ -135,3 +135,18 @@ if __name__ == "__main__":
 
     #서버 디렉터리(폴더,파일) 탐색 함수
     dirSearch(url)
+
+    print("Directory Names:")
+    print("===========")
+    directory_names = set()
+
+    for path_with_extension, _ in refer_dict.items():
+        path_parts = path_with_extension.split('/')
+        if len(path_parts) > 1:
+            directory_name = '/'.join(path_parts[:-1]) + '/'
+            #디렉터리 이름이 올바른 형식인지 검사
+            if not any(char in r":*\"<>" for char in directory_name):
+                directory_names.add(directory_name)
+
+    for dirname in directory_names:
+        print(f"{dirname}")    
