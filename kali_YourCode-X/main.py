@@ -22,36 +22,13 @@ def dirScan(url):
     print("===========")
     for line in extracted_info.split('\n'):
         if line.startswith("DIR: "):
-            print(line)
+            print(line[5:])
     #출력 파일 이름
-    print("\nFilename:")
+    print("\nFile Names:")
     print("===========")
     for line in extracted_info.split('\n'):
         if line.startswith("FILE: "):
-            print(line)    
-
-####directory_scan_test1.py
-    # output = subprocess.run(['python3', './directory_scan_test1.py', url], capture_output=True, text=True)
-    # #Windows에서 동작
-    # #output = subprocess.check_output(['python', './Protocol/directory_scan.py', url])
-
-    # #directory_scan.py의 표준 출력 결과에서 추출한 정보를 가져옴
-    # extracted_info = output.stdout
-
-    # #출력 디렉토리 이름
-    # print("Directory Names:")
-    # print("===========")
-    # #extracted_info에서 디렉토리 정보 찾아서 출력
-    # for line in extracted_info.split('\n'):
-    #     if line.startswith("DIR: "):
-    #         print(line)
-    # #출력 파일 이름
-    # print("\nFilename:")
-    # print("===========")
-    # #extracted_info에서 파일 정보 찾아서 출력
-    # for line in extracted_info.split('\n'):
-    #     if line.startswith("FILE: "):
-    #         print(line)
+            print(line[6:])
 
 
 if __name__ == '__main__':

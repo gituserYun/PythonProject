@@ -118,8 +118,6 @@ def dirSearch(target_url):
                     path_with_extension = urlparse(full_url).path
                     refer_dict.setdefault(path_with_extension, []).append((full_url, response.status_code))
 
-
-
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("Error code: URL[1] 인자 전달받지 못함")
@@ -136,10 +134,7 @@ if __name__ == "__main__":
     #서버 디렉터리(폴더,파일) 탐색 함수
     dirSearch(url)
 
-    # print("Directory Names:")
-    # print("===========")
     directory_names = set()
-
     for path_with_extension, _ in refer_dict.items():
         path_parts = path_with_extension.split('/')
         if len(path_parts) > 1:
@@ -147,25 +142,19 @@ if __name__ == "__main__":
             #디렉터리 이름이 올바른 형식인지 검사
             if not any(char in r":*\"<>" for char in directory_name):
                 directory_names.add(directory_name)
-
     for dirname in directory_names:
         print(f"DIR: {dirname}", file=sys.stdout)
 
-    # print("\nFilename:")
-    # print("===========")
     web_extensions = {'.html', '.htm', '.php', '.jsp', '.asp', '.aspx',
                     '.css', '.js',
                     '.png', '.jpg', '.jpeg', '.svg'}
 
-    #main으로 리턴해줄 해당 디렉토리 경로
     re_path = []
     for path_with_extension, references in refer_dict.items():
         _, ext = os.path.splitext(path_with_extension)
-
         if ext in web_extensions:
             re_path.append(path_with_extension)
             print(f"FILE: {path_with_extension}", file=sys.stdout)
-            #print(f"-> {path_with_extension}")
             unique_references = set()  #set 타입을 사용하여 고유 참조 확인
             # for ref_info in references:
             #     full_url = ref_info[0]
