@@ -72,5 +72,5 @@ if __name__ == '__main__':
         full_url = "{}/{}".format(url.rstrip('/'), file.lstrip('/'))
         check_url.append(full_url)
     #점검항목1: SQL 인젝션(SQL Injection)
-    sqlI(check_url)
+    sqlI(url, check_url)
     

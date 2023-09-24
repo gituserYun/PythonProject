@@ -37,7 +37,7 @@ def classicSQLI(action_url, form_data):
         print("Method: POST")
         #exploit code 불러와서 담기
         
-        x_file1 = "./VulnerabilityList/classic_sqli_post.txt"
+        x_file1 = "./classic_sqli_post.txt"
         exploits = exploitsFile1(x_file1)
         #print(f"exploits: {exploits}")
         
@@ -96,7 +96,7 @@ if __name__ == "__main__":
         print("Error code: url[1], check_url[2] 인자 전달받지 못함")
         sys.exit(1)
     url = sys.argv[1]
-    urls_json = json.loads(sys.argv[1])
+    urls_json = json.loads(sys.argv[2])
 
     #정적 콘텐츠 제공하는 확장자 제외(.jpg, .jpeg, .png, etc., .css, .js)
     static_extensions = {'.jpg', '.jpeg', '.png', '.css', '.js'}
