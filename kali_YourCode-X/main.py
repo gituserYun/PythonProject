@@ -14,8 +14,21 @@ print_white = lambda x : cprint(x, "white")
 def dirScan(url):
     #Linux에서 동작
     output = subprocess.run(['python3', './directory_scan.py', url], capture_output=True, text=True)
+    #directory_scan.py의 표준 출력 결과에서 추출한 정보를 가져옴
     extracted_info = output.stdout
-    print(extracted_info)
+    
+    #출력 디렉토리 이름
+    print("Directory Names:")
+    print("===========")
+    for line in extracted_info.split('\n'):
+        if line.startswith("DIR: "):
+            print(line)
+    #출력 파일 이름
+    print("\nFilename:")
+    print("===========")
+    for line in extracted_info.split('\n'):
+        if line.startswith("FILE: "):
+            print(line)    
 
 ####directory_scan_test1.py
     # output = subprocess.run(['python3', './directory_scan_test1.py', url], capture_output=True, text=True)
