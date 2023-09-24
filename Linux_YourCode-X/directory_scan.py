@@ -161,4 +161,4 @@ if __name__ == "__main__":
             #     status_code = ref_info[1]
             #     unique_references.add((full_url, status_code))
             # for ref_info in unique_references:
-            #     print(f"refer) {ref_info[0]}, Status Code: {ref_info[1]}")    
+            #     print(f"refer) {ref_info[0]}, Status Code: {ref_info[1]}")

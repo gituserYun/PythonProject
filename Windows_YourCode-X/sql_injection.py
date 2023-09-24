@@ -37,7 +37,7 @@ def classicSQLI(action_url, form_data):
         print("Method: POST")
         #exploit code 불러와서 담기
         
-        x_file1 = "./VulnerabilityList/classic_sqli_post.txt"
+        x_file1 = "./Windows_YourCode-X/classic_sqli_post.txt"
         exploits = exploitsFile1(x_file1)
         #print(f"exploits: {exploits}")
         
@@ -75,23 +75,19 @@ def classicSQLI(action_url, form_data):
     else:
         print("Error occurred while attempting(POST/GET)")
 
-    # 필요한 정보를 출력
-    # print("Method:", method)
-    # print("Action:", action)
-    # print("Input Fields:", input_fields)
-    # print("Textarea Fields:", textarea_fields)
-    # print("Select Fields:", select_fields)
-    # print("Button Fields:", button_fields)
-    # 결과 값
-    # =============
-    # Checking http://192.168.107.128/login.jsp
-    # Method: POST
-    # Action: loginAction.jsp
-    # Input Fields: [{'name': 'userID', 'type': 'text'}, {'name': 'userPassword', 'type': 'password'}, {'name': None, 'type': 'submit'}]
-    # Textarea Fields: []
-    # Select Fields: []
-    # Button Fields: []
-    # ============= 
+
+# def BlindSQLI():
+#     return
+# def TimeBasedSQLI():
+#     return
+# def ErrorBasedSQLI():
+#     return
+# def UNIONBasedSQLI():
+#     return
+# def OutofbandSQLI():
+#     return
+# def SecondOrderSQLI():
+#     return
 
 
 #main에서 매개변수로 전달된 url, check_url 받아와서 점검 항목 수행
@@ -100,12 +96,12 @@ if __name__ == "__main__":
         print("Error code: url[1], check_url[2] 인자 전달받지 못함")
         sys.exit(1)
     url = sys.argv[1]
-    check_url = json.loads(sys.argv[2])
+    urls_json = json.loads(sys.argv[2])
 
     #정적 콘텐츠 제공하는 확장자 제외(.jpg, .jpeg, .png, etc., .css, .js)
     static_extensions = {'.jpg', '.jpeg', '.png', '.css', '.js'}
-    check_files = [file for file in check_url if os.path.splitext(file)[1] not in static_extensions]
-    print(f"check_files: {check_files}")
+    check_files = [file for file in urls_json if os.path.splitext(file)[1] not in static_extensions]
+    #print(f"check_files: {check_files}")
 
     #취약점(SQL Injection)에 해당되는 파일 식별
     for file in check_files:
@@ -174,4 +170,4 @@ if __name__ == "__main__":
 
         #일시적 점검을 위한 중단
         break
-        
+  

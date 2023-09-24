@@ -13,48 +13,35 @@ print_grey = lambda x : cprint(x, "grey")
 print_white = lambda x : cprint(x, "white")
 
 def dirScan(url):
-    #Linux에서 동작
-    #output = subprocess.check_output(['python3', './Protocol/directory_scan.py', url])
-
-    #Windows에서 동작
-    output = subprocess.check_output(['python', './Protocol/directory_scan.py', url])
-    output_str = output.decode('utf-8')
-    path_list = output_str.split('\r\n')
-    #print(f"test output: {path_list}")
-
+    # #Windows에서 동작
+    output = subprocess.run(['python', './Windows_YourCode-X/directory_scan.py', url], capture_output=True, text=True)
+    extracted_info = output.stdout
     directory_names = []
     file_names = []
 
+    #출력 디렉토리 이름
     print("Directory Names:")
     print("===========")
-    for path in path_list:
-        if path.endswith('/'):
-            directory_names.append(path)
-    for dirname in directory_names:
-        print(f"{dirname}")
-
-    print("\nFilename:")
+    for line in extracted_info.split('\n'):
+        if line.startswith("DIR: "):
+            directory_names.append(line[5:])
+            print(line[5:])
+    #출력 파일 이름
+    print("\nFile Names:")
     print("===========")
-    web_extensions = {'.html', '.htm', '.php', '.jsp', '.asp', '.aspx',
-                        '.css', '.js',
-                        '.png', '.jpg', '.jpeg', '.svg'}
-    for path in path_list:
-        _, ext = os.path.splitext(path)
-        if ext in web_extensions:
-            file_names.append(path)
-    for filename in file_names:
-        print(f"{filename}")
+    for line in extracted_info.split('\n'):
+        if line.startswith("FILE: "):
+            file_names.append(line[6:])
+            print(line[6:])
+    
     print_blue("\n[*] 디렉토리 스캔 동작 점검\n")
 
-    return directory_names, file_names
+    return directory_names, file_names 
 
-def sqlI(url, files):
-    #dir_str = json.dumps(directories)
-    file_str = json.dumps(files)
-
-    #subprocess.call(['python3', './VulnerabilityList/sql_injection_test1.py',url ,file_str])
-    subprocess.call(['python', './VulnerabilityList/sql_injection_test1.py',url ,file_str])
-    print_blue("\n[*] SQL 인젝션 항목 점검\n")
+def sqlI(url, check_url):
+    urls_json = json.dumps(check_url)
+    subprocess.call(['python', './Windows_YourCode-X/sql_injection.py' ,url ,urls_json])
+    
 
 if __name__ == '__main__':
     print_blue("\n==================================================================================\n")
@@ -78,13 +65,10 @@ if __name__ == '__main__':
 
     #디렉토리 스캔 함수
     directories, files = dirScan(url)
-    #print(directories)
-    #print(files)
+    
     check_url = []
     for file in files:
         full_url = "{}/{}".format(url.rstrip('/'), file.lstrip('/'))
         check_url.append(full_url)
-    #print(f"check_url: {check_url}")
-
     #점검항목1: SQL 인젝션(SQL Injection)
     sqlI(url, check_url)
