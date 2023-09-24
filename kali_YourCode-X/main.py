@@ -13,7 +13,9 @@ print_white = lambda x : cprint(x, "white")
 
 def dirScan(url):
     #Linux에서 동작
-    output = subprocess.run(['python3', './directory_scan.py', url])
+    output = subprocess.run(['python3', './directory_scan.py', url], capture_output=True, text=True)
+    extracted_info = output.stdout
+    print(extracted_info)
 
 ####directory_scan_test1.py
     # output = subprocess.run(['python3', './directory_scan_test1.py', url], capture_output=True, text=True)

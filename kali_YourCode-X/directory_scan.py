@@ -136,8 +136,8 @@ if __name__ == "__main__":
     #서버 디렉터리(폴더,파일) 탐색 함수
     dirSearch(url)
 
-    print("Directory Names:")
-    print("===========")
+    # print("Directory Names:")
+    # print("===========")
     directory_names = set()
 
     for path_with_extension, _ in refer_dict.items():
@@ -149,10 +149,10 @@ if __name__ == "__main__":
                 directory_names.add(directory_name)
 
     for dirname in directory_names:
-        print(f"{dirname}")
+        print(f"DIR: {dirname}", file=sys.stdout)
 
-    print("\nFilename:")
-    print("===========")
+    # print("\nFilename:")
+    # print("===========")
     web_extensions = {'.html', '.htm', '.php', '.jsp', '.asp', '.aspx',
                     '.css', '.js',
                     '.png', '.jpg', '.jpeg', '.svg'}
@@ -164,7 +164,7 @@ if __name__ == "__main__":
 
         if ext in web_extensions:
             re_path.append(path_with_extension)
-            print(f"{path_with_extension}")
+            print(f"FILE: {path_with_extension}", file=sys.stdout)
             #print(f"-> {path_with_extension}")
             unique_references = set()  #set 타입을 사용하여 고유 참조 확인
             # for ref_info in references:
