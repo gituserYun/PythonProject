@@ -64,5 +64,7 @@ if __name__ == '__main__':
     for file in files:
         full_url = "{}/{}".format(url.rstrip('/'), file.lstrip('/'))
         check_url.append(full_url)
-    #print(f"check_url: {check_url}")
+    
+    #점검항목1: SQL 인젝션(SQL Injection)
+    sqlI(url, check_url)
     
