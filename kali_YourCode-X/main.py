@@ -16,19 +16,27 @@ def dirScan(url):
     output = subprocess.run(['python3', './directory_scan.py', url], capture_output=True, text=True)
     #directory_scan.py의 표준 출력 결과에서 추출한 정보를 가져옴
     extracted_info = output.stdout
-    
+    directory_names = []
+    file_names = []
+
     #출력 디렉토리 이름
     print("Directory Names:")
     print("===========")
     for line in extracted_info.split('\n'):
         if line.startswith("DIR: "):
+            directory_names.append(line[5:])
             print(line[5:])
     #출력 파일 이름
     print("\nFile Names:")
     print("===========")
     for line in extracted_info.split('\n'):
         if line.startswith("FILE: "):
+            file_names.append(line[6:])
             print(line[6:])
+    
+    print_blue("\n[*] 디렉토리 스캔 동작 점검\n")
+
+    return directory_names, file_names
 
 
 if __name__ == '__main__':
@@ -51,4 +59,6 @@ if __name__ == '__main__':
     print("")
 
     #디렉토리 스캔 함수
-    dirScan(url)
+    directories, files = dirScan(url)
+    print(directories)
+    print(files)
