@@ -118,8 +118,7 @@ if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("Error code: check_url[1] 인자 전달받지 못함")
         sys.exit(1)
-    # directories = json.loads(sys.argv[2])
-    check_url = json.loads(sys.argv[1])
+    check_url = sys.argv[1]
 
     #정적 콘텐츠 제공하는 확장자 제외(.jpg, .jpeg, .png, etc., .css, .js)
     static_extensions = {'.jpg', '.jpeg', '.png', '.css', '.js'}
