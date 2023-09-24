@@ -39,7 +39,7 @@ def dirScan(url):
     return directory_names, file_names
 
 def sqlI(files):
-    output = subprocess.run(['python3', './sql_injection.py', files], capture_output=True, text=True)
+    output = subprocess.run(['python3', './sql_injection.py'] + files, capture_output=True, text=True)
     print_blue("\n[*] SQL 인젝션 항목 점검\n")  
 
 if __name__ == '__main__':
@@ -69,5 +69,5 @@ if __name__ == '__main__':
         check_url.append(full_url)
     
     #점검항목1: SQL 인젝션(SQL Injection)
-    sqlI(url, check_url)
+    sqlI(check_url)
     
