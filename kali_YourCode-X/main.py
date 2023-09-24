@@ -1,6 +1,7 @@
 import subprocess
 from termcolor import cprint
 import os
+import json
 
 print_red = lambda x: cprint(x, 'red')
 print_yellow = lambda x: cprint(x, 'yellow')
@@ -40,6 +41,7 @@ def dirScan(url):
 
 def sqlI(check_url):
     urls_json = json.dumps(check_url)
+    print(f"urls_json1: {urls_json}")
     output = subprocess.run(['python3', './sql_injection.py', urls_json], capture_output=True, text=True)
     print_blue("\n[*] SQL 인젝션 항목 점검\n")  
 

@@ -113,16 +113,17 @@ import json
 #     return
 
 
-#main에서 매개변수로 전달된 check_url 받아와서 점검 항목 수행
+#main에서 매개변수로 전달된 urls_json 받아와서 점검 항목 수행
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Error code: check_url[1] 인자 전달받지 못함")
+        print("Error code: urls_json[1] 인자 전달받지 못함")
         sys.exit(1)
-    check_url = json.loads(sys.argv[1])
+    urls_json = json.loads(sys.argv[1])
+    print(f"urls_json2: {urls_json}")
 
     #정적 콘텐츠 제공하는 확장자 제외(.jpg, .jpeg, .png, etc., .css, .js)
     static_extensions = {'.jpg', '.jpeg', '.png', '.css', '.js'}
-    check_files = [file for file in check_url if os.path.splitext(file)[1] not in static_extensions]
+    check_files = [file for file in urls_json if os.path.splitext(file)[1] not in static_extensions]
     print(f"check_files: {check_files}")
 
     #classicSQLI(check_files)
