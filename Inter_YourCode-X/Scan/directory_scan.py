@@ -146,9 +146,8 @@ if __name__ == "__main__":
         print(f"DIR: {dirname}", file=sys.stdout)
 
     web_extensions = {'.html', '.htm', '.php', '.jsp', '.asp', '.aspx',
-                    '.css', '.js',
-                    '.png', '.jpg', '.jpeg', '.svg'}
-
+                    '.css', '.js', '.jsx', '.vue', '.ts', '.tsx', '.scess',
+                    '.less', '.png', '.jpg', '.jpeg', '.svg'}
     re_path = []
     for path_with_extension, references in refer_dict.items():
         _, ext = os.path.splitext(path_with_extension)

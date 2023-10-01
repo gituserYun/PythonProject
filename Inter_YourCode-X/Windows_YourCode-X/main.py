@@ -25,16 +25,16 @@ def dirScan(url):
     for line in extracted_info.split('\n'):
         if line.startswith("DIR: "):
             directory_names.append(line[5:])
-            print(line[5:])
+            # print(line[5:])
     #출력 파일 이름
     print("\nFile Names:")
     print("===========")
     for line in extracted_info.split('\n'):
         if line.startswith("FILE: "):
             file_names.append(line[6:])
-            print(line[6:])
+            # print(line[6:])
     
-    print_blue("\n[*] 디렉토리 스캔 동작 점검\n")
+    # print_blue("\n[*] 디렉토리 스캔 동작 점검\n")
 
     return directory_names, file_names 
 
