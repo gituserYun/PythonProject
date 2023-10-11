@@ -44,45 +44,56 @@ def sqlI(url, check_url):
     # Windows에서 동작
     output = subprocess.run(['python', '../VulnerabilityList/SQLI/sql_injection.py' ,url ,urls_json], capture_output=True, text=True)
     extracted_info = output.stdout
-    payload = []
-    category = "SQL 인젝션"
-    num = 0
-    risk = None
-    targeturl_s = set()
-    
+
+    # payload 추출
+    cnt = 0
+    payload_s = set()
     for line in extracted_info.split('\n'):
         if line.startswith("Attack Detected: "):
-            payload.append(line[17:])
-    #위험과 주의가 섞여있을 때 판별해야함.
-    for line in extracted_info.split('\n'):
-        if line.startswith("risk: "):
-            risk = str(line[6:])
-            break
+            payload_s.add(line[17:])
+    payload = list(payload_s)
+    print_green("\npayload(Payload Code):")
+    print_green("===========")
+    for code in payload:
+        print(code)
+        cnt += 1
+    print_grey(f"payload cnt: {cnt}")
+
+    # category 추출
+    category = "SQL 인젝션"
+    print_green("\ncategory:")
+    print_green("===========")
+    print(category)
+
+    # targeturl 추출
+    targeturl_s = set()
+    num = 0
     for line in extracted_info.split('\n'):
         if line.startswith("Target url: "):
             targeturl_s.add(line[12:])
     targeturl = list(targeturl_s)
-
-    print_green("\nPayload Code(payload):")
-    print_green("===========")
-    for code in payload:
-        print(code)
-    print_green("\nCategory(category):")
-    print_green("===========")
-    print(category)
-    print_green("\nVulnerable file path(targeturl):")
+    print_green("\ntargeturl(Vulnerable file path):")
     print_green("===========")
     for target in targeturl:
         print(target)
         num += 1 #취약한 파일 경로 수 파악
-    print_green("\nNumber of vulnerable file paths(num):")
+
+    # num 추출
+    print_green("\nnum(Number of vulnerable file paths):")
     print_green("===========")
     print(num)
-    print_green("\nRisk(risk):")
+
+    # risk 데이터 추출
+    risk = 'Low'
+    risk_order = {'High':0, 'Medium':1, 'Low':2}
+    print_green("\nrisk:")
     print_green("===========")
     for line in extracted_info.split('\n'):
         if line.startswith("risk: "):
             print(line[6:])
+            extracted_risk = line[6:].strip()
+            if risk_order[extracted_risk] < risk_order[risk]:
+                risk = extracted_risk
 
     return payload, category, num, risk, targeturl
 
