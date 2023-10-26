@@ -1,4 +1,3 @@
-
 import subprocess
 from termcolor import cprint
 import os
@@ -16,86 +15,114 @@ print_white = lambda x : cprint(x, "white")
 def dirScan(url):
     print_blue("\n[*] 디렉토리 스캔 동작 점검\n")
     # Windows에서 동작
+    # subprocess.call(['python', '../Scan/directory_scan.py', url])
     output = subprocess.run(['python', '../Scan/directory_scan.py', url], capture_output=True, text=True)
     extracted_info = output.stdout
-    directory_names = []
-    file_names = []
+    directory_names_set = set()
+    file_names_set = set()
 
     # 출력 디렉토리 이름
-    print_green("Directory Names:")
-    print_green("===========")
+    directory_names = []
     for line in extracted_info.split('\n'):
         if line.startswith("DIR: "):
-            directory_names.append(line[5:])
-            print(line[5:])
-    # 출력 파일 이름
-    print_green("\nFile Names:")
+            directory_names_set.add(line[5:])
+    print_green("Directory Names:")
     print_green("===========")
+    for directory_name in directory_names_set:
+        directory_names.append(directory_name)
+        print(directory_name)
+
+    # 출력 파일 이름
+    cnt = 0
+    file_names = []
     for line in extracted_info.split('\n'):
         if line.startswith("FILE: "):
-            file_names.append(line[6:])
-            print(line[6:])
+            file_names_set.add(line[6:])
+    print_green("\nFile Names:")
+    print_green("===========")
+    for file_name in file_names_set:
+        file_names.append(file_name)
+        print(file_name)
+        cnt += 1
+    print_grey(f"File Name cnt: {cnt}")
 
     return directory_names, file_names 
 
-def sqlI(url, check_url):
+# def sqlI(url, check_url):
+#     urls_json = json.dumps(check_url)
+#     print_blue("\n[*] SQL Injection 점검")
+#     # Windows에서 동작
+#     output = subprocess.run(['python', '../VulnerabilityList/SQLI/sql_injection.py' ,url ,urls_json], capture_output=True, text=True)
+#     extracted_info = output.stdout
+
+#     # payload 추출
+#     cnt = 0
+#     payload_s = set()
+#     for line in extracted_info.split('\n'):
+#         if line.startswith("Attack Detected: "):
+#             payload_s.add(line[17:])
+#     payload = list(payload_s)
+#     print_green("\npayload(Payload Code):")
+#     print_green("===========")
+#     for code in payload:
+#         print(code)
+#         cnt += 1
+#     print_grey(f"payload cnt: {cnt}")
+
+#     # category 추출
+#     category = "SQL 인젝션"
+#     print_green("\ncategory:")
+#     print_green("===========")
+#     print(category)
+
+#     # targeturl 추출
+#     targeturl_s = set()
+#     num = 0
+#     for line in extracted_info.split('\n'):
+#         if line.startswith("Target url: "):
+#             targeturl_s.add(line[12:])
+#     targeturl = list(targeturl_s)
+#     print_green("\ntargeturl(Vulnerable file path):")
+#     print_green("===========")
+#     for target in targeturl:
+#         print(target)
+#         num += 1 #취약한 파일 경로 수 파악
+
+#     # num 추출
+#     print_green("\nnum(Number of vulnerable file paths):")
+#     print_green("===========")
+#     print(num)
+
+#     # risk 데이터 추출
+#     risk = 'Low'
+#     risk_order = {'High':0, 'Medium':1, 'Low':2}
+#     print_green("\nrisk:")
+#     print_green("===========")
+#     for line in extracted_info.split('\n'):
+#         if line.startswith("risk: "):
+#             print(line[6:])
+#             extracted_risk = line[6:].strip()
+#             if risk_order[extracted_risk] < risk_order[risk]:
+#                 risk = extracted_risk
+
+#     # inspectionurl 추출
+#     inspectionurl_s = set()
+#     for line in extracted_info.split('\n'):
+#         if line.startswith("inspection_url: "):
+#             inspectionurl_s.add(line[16:])
+#     inspectionurl = list(inspectionurl_s)
+#     print_green("\ninspectionurl(Inspection url path):")
+#     print_green("===========")
+#     for inspection in inspectionurl:
+#         print(inspection)
+
+#     return payload, category, num, risk, targeturl, inspectionurl
+
+def xss(url, check_url):
     urls_json = json.dumps(check_url)
-    print_blue("\n[*] SQL Injection 점검")
-    # Windows에서 동작
-    output = subprocess.run(['python', '../VulnerabilityList/SQLI/sql_injection.py' ,url ,urls_json], capture_output=True, text=True)
-    extracted_info = output.stdout
-
-    # payload 추출
-    cnt = 0
-    payload_s = set()
-    for line in extracted_info.split('\n'):
-        if line.startswith("Attack Detected: "):
-            payload_s.add(line[17:])
-    payload = list(payload_s)
-    print_green("\npayload(Payload Code):")
-    print_green("===========")
-    for code in payload:
-        print(code)
-        cnt += 1
-    print_grey(f"payload cnt: {cnt}")
-
-    # category 추출
-    category = "SQL 인젝션"
-    print_green("\ncategory:")
-    print_green("===========")
-    print(category)
-
-    # targeturl 추출
-    targeturl_s = set()
-    num = 0
-    for line in extracted_info.split('\n'):
-        if line.startswith("Target url: "):
-            targeturl_s.add(line[12:])
-    targeturl = list(targeturl_s)
-    print_green("\ntargeturl(Vulnerable file path):")
-    print_green("===========")
-    for target in targeturl:
-        print(target)
-        num += 1 #취약한 파일 경로 수 파악
-
-    # num 추출
-    print_green("\nnum(Number of vulnerable file paths):")
-    print_green("===========")
-    print(num)
-
-    # risk 데이터 추출
-    risk = 'Low'
-    risk_order = {'High':0, 'Medium':1, 'Low':2}
-    print_green("\nrisk:")
-    print_green("===========")
-    for line in extracted_info.split('\n'):
-        if line.startswith("risk: "):
-            print(line[6:])
-            extracted_risk = line[6:].strip()
-            if risk_order[extracted_risk] < risk_order[risk]:
-                risk = extracted_risk
-
-    return payload, category, num, risk, targeturl
+    print_blue("\n[*] XSS 점검\n")
+    subprocess.call(['python', '../VulnerabilityList/XSS/xss.py', url, urls_json])
+    # output = subprocess.run(['python', '../VulnerabilityList/XSS/xss.py' ,url ,urls_json], capture_output=True, text=True)
 
 
 if __name__ == '__main__':
@@ -118,7 +145,8 @@ if __name__ == '__main__':
     url = input("URL을 입력: ")
     print("")
 
-    #디렉토리 스캔 함수
+    # 디렉토리 스캔 함수
+    # dirScan(url)
     directories, files = dirScan(url)
     
     # 프로토콜+점검IP+리소스 경로
@@ -128,24 +156,29 @@ if __name__ == '__main__':
         check_url.append(full_url)
     
     ### 점검 시작 ###
-    #점검항목1: SQL 인젝션(SQL Injection)
-    payload, category, num, risk, targeturl = sqlI(url, check_url)
+    # 점검항목1: SQL 인젝션(SQL Injection)
+    # payload, category, num, risk, targeturl, inspectionurl = sqlI(url, check_url)
+    
+    # 점검항목2: XSS(Crose Site Script)
+    xss(url, check_url)
     #################
 
     ### 점검 결과 ###
     # url, payload, category, num, risk 
-    print_blue("\n[*] 점검 결과")
-    print_green("url:\n===========")
-    print(url)
-    print_green("\npayload:\n===========")
-    print(payload)
-    print_green("\ncategory:\n===========")
-    print(category)
-    print_green("\nnum:\n===========")
-    print(num)
-    print_green("\nrisk:\n===========")
-    print(risk)
-    print_green("\ntargeturl:\n===========")
-    print(targeturl)
+    # print_blue("\n[*] 점검 결과")
+    # print_green("url:\n===========")
+    # print(url)
+    # print_green("\npayload:\n===========")
+    # print(payload)
+    # print_green("\ncategory:\n===========")
+    # print(category)
+    # print_green("\nnum:\n===========")
+    # print(num)
+    # print_green("\nrisk:\n===========")
+    # print(risk)
+    # print_green("\ntargeturl:\n===========")
+    # print(targeturl)
+    # print_green("\ninspectionurl:\n===========")
+    # print(inspectionurl)
 
     
