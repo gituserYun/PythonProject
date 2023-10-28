@@ -18,10 +18,9 @@ def dirScan(url):
     # subprocess.call(['python', '../Scan/directory_scan.py', url])
     output = subprocess.run(['python', '../Scan/directory_scan.py', url], capture_output=True, text=True)
     extracted_info = output.stdout
-    directory_names_set = set()
-    file_names_set = set()
 
     # 출력 디렉토리 이름
+    directory_names_set = set()
     directory_names = []
     for line in extracted_info.split('\n'):
         if line.startswith("DIR: "):
@@ -34,6 +33,7 @@ def dirScan(url):
 
     # 출력 파일 이름
     cnt = 0
+    file_names_set = set()
     file_names = []
     for line in extracted_info.split('\n'):
         if line.startswith("FILE: "):
@@ -46,7 +46,32 @@ def dirScan(url):
         cnt += 1
     print_grey(f"File Name cnt: {cnt}")
 
-    return directory_names, file_names 
+    # 식별 경로
+    identi_path_set = set()
+    identi_paths = []
+    identi_path_dict = {
+        "script_location: ": 17,
+        "script_src: ": 12,
+        "a_href: ": 8,
+        "form_action: ": 13,
+        "link_href: ": 11,
+        "img_src: ": 9,
+        "area_href: ": 11,
+        "meta: ": 6,
+        "embed&object: ": 14,
+    }
+    for line in extracted_info.split('\n'):
+        for key, prefix_len in identi_path_dict.items():
+            if line.startswith(key):
+                identi_path_set.add(line[prefix_len:])
+                break
+    print_green("\nIdentification path:")
+    print_green("===========")
+    for identi_path in identi_path_set:
+        identi_paths.append(identi_path)
+        print(identi_path) 
+
+    return directory_names, file_names, identi_paths
 
 # def sqlI(url, check_url):
 #     urls_json = json.dumps(check_url)
@@ -116,13 +141,25 @@ def dirScan(url):
 #     for inspection in inspectionurl:
 #         print(inspection)
 
-#     return payload, category, num, risk, targeturl, inspectionurl
+#     # detailpayload 추출
+#     detailpayload_s = set()
+#     for line in extracted_info.split('\n'):
+#         if line.startswith("Detail payload: "):
+#             detailpayload_s.add(line[16:])
+#     detailpayload = list(detailpayload_s)
+#     print_green("\ndetailpayload(Performance Indicators by Inspection Item):")
+#     print_green("===========")
+#     for detail in detailpayload:
+#         print(detail)
 
-def xss(url, check_url):
+#     return payload, category, num, risk, targeturl, inspectionurl, detailpayload
+
+def xss(url, check_url, identi_paths):
     urls_json = json.dumps(check_url)
-    print_blue("\n[*] XSS 점검\n")
-    subprocess.call(['python', '../VulnerabilityList/XSS/xss.py', url, urls_json])
-    # output = subprocess.run(['python', '../VulnerabilityList/XSS/xss.py' ,url ,urls_json], capture_output=True, text=True)
+    identi_json = json.dumps(identi_paths)
+    print_blue("\n[*] XSS 점검")
+    subprocess.call(['python', '../VulnerabilityList/XSS/xss.py', url, urls_json, identi_json])
+    # output = subprocess.run(['python', '../VulnerabilityList/XSS/xss.py' ,url ,urls_json, identi_json], capture_output=True, text=True)
 
 
 if __name__ == '__main__':
@@ -147,7 +184,7 @@ if __name__ == '__main__':
 
     # 디렉토리 스캔 함수
     # dirScan(url)
-    directories, files = dirScan(url)
+    directories, files, identi_paths = dirScan(url)
     
     # 프로토콜+점검IP+리소스 경로
     check_url = []
@@ -157,10 +194,10 @@ if __name__ == '__main__':
     
     ### 점검 시작 ###
     # 점검항목1: SQL 인젝션(SQL Injection)
-    # payload, category, num, risk, targeturl, inspectionurl = sqlI(url, check_url)
+    # payload, category, num, risk, targeturl, inspectionurl, detailpayload = sqlI(url, check_url)
     
     # 점검항목2: XSS(Crose Site Script)
-    xss(url, check_url)
+    xss(url, check_url, identi_paths)
     #################
 
     ### 점검 결과 ###
@@ -180,5 +217,7 @@ if __name__ == '__main__':
     # print(targeturl)
     # print_green("\ninspectionurl:\n===========")
     # print(inspectionurl)
+    # print_green("\ndetailpayload:\n===========")
+    # print(detailpayload)
 
     
