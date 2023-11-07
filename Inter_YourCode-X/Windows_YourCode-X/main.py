@@ -94,6 +94,8 @@ def sql_injection(url, check_url):
         print(code)
         cnt += 1
     print_grey(f"payload cnt: {cnt}")
+    if cnt == 0:
+        payload_1 = "          -          "    
 
     # category_1 추출
     category_1 = "SQL 인젝션(SQL Injection)"
@@ -113,6 +115,8 @@ def sql_injection(url, check_url):
     for target in targeturl_1:
         print(target)
         num_1 += 1 #취약한 파일 경로 수 파악
+    if num_1 == 0:
+        targeturl_1 = "          -          "    
 
     # num_1 추출
     print_green("\nnum(Number of vulnerable file paths):")
@@ -126,10 +130,10 @@ def sql_injection(url, check_url):
     print_green("===========")
     for line in extracted_info.split('\n'):
         if line.startswith("Risk: "):
-            print(line[6:])
             extracted_risk = line[6:].strip()
             if risk_order[extracted_risk] < risk_order[risk_1]:
                 risk_1 = extracted_risk
+    print(risk_1)
 
     # inspectionurl_1 추출
     inspectionurl_1s = set()
@@ -144,6 +148,7 @@ def sql_injection(url, check_url):
 
     # detailpayload_1 추출
     detailpayload_1s = set()
+    detail_1 = 0
     for line in extracted_info.split('\n'):
         if line.startswith("Detail payload: "):
             detailpayload_1s.add(line[16:])
@@ -151,7 +156,11 @@ def sql_injection(url, check_url):
     print_green("\ndetailpayload(Performance Indicators by Inspection Item):")
     print_green("===========")
     for detail in detailpayload_1:
-        print(detail)
+        if detail:
+            print(detail)
+            detail_1 += 1
+    if detail_1 == 0:
+        detailpayload_1 = "          -          "
 
     return payload_1, category_1, num_1, risk_1, targeturl_1, inspectionurl_1, detailpayload_1
 
@@ -176,6 +185,8 @@ def xss(url, check_url, identi_paths):
         print(code)
         cnt += 1
     print_grey(f"payload cnt: {cnt}")
+    if cnt == 0:
+        payload_2 = "          -          "    
 
     # category_2 추출
     category_2 = "크로스사이트스크립팅(XSS)"
@@ -195,6 +206,8 @@ def xss(url, check_url, identi_paths):
     for target in targeturl_2:
         print(target)
         num_2 += 1 #취약한 파일 경로 수 파악    
+    if num_2 == 0:
+        targeturl_2 = "          -          "
 
     # num_2 추출
     print_green("\nnum(Number of vulnerable file paths):")
@@ -226,6 +239,7 @@ def xss(url, check_url, identi_paths):
 
     # detailpayload_2 추출
     detailpayload_2s = set()
+    detail_2 = 0
     for line in extracted_info.split('\n'):
         if line.startswith("Detail payload: "):
             detailpayload_2s.add(line[16:])
@@ -233,7 +247,11 @@ def xss(url, check_url, identi_paths):
     print_green("\nDetailpayload(Performance Indicators by Inspection Item):")
     print_green("===========")
     for detail in detailpayload_2:
-        print(detail)
+        if detail:
+            print(detail)
+            detail_2 += 1
+    if detail_2 == 0:
+        detailpayload_2 = "          -          "
     
     return payload_2, category_2, num_2, risk_2, targeturl_2, inspectionurl_2, detailpayload_2
 
@@ -242,8 +260,111 @@ def directory_traversal(url, check_url, identi_paths):
     identi_json = json.dumps(identi_paths)
     print_blue("\n[*] Directory Traversal 점검")
     # Windows에서 동작
-    subprocess.call(['python', '../VulnerabilityList/DI/directory_traversal.py', url, urls_json, identi_json])
+    # subprocess.call(['python', '../VulnerabilityList/DT/directory_traversal.py', url, urls_json, identi_json])
+    output = subprocess.run(['python', '../VulnerabilityList/DT/directory_traversal.py' ,url ,urls_json, identi_json], capture_output=True, text=True, check=True)        
+    extracted_info = output.stdout
+
+    # payload_3 추출
+    cnt = 0
+    payload_3s = set()
+    for line in extracted_info.split('\n'):
+        if line.startswith("Attack Detected: "):
+            payload_3s.add(line[17:])
+    payload_3 = list(payload_3s)
+    print_green("\npayload(Payload Code):")
+    print_green("===========")
+    for code in payload_3:
+        print(code)
+        cnt += 1
+    print_grey(f"payload cnt: {cnt}")
+    if cnt == 0:
+        payload_3 = "          -          "
+
+    # category_3 추출
+    category_3 = "디렉토리 트레버설(Directory Traversal)"
+    print_green("\ncategory:")
+    print_green("===========")
+    print(category_3)
+
+    # targeturl_3 추출
+    targeturl_3s = set()
+    num_3 = 0
+    for line in extracted_info.split('\n'):
+        if line.startswith("Target url: "):
+            targeturl_3s.add(line[12:])
+    targeturl_3 = list(targeturl_3s)
+    print_green("\ntargeturl(Vulnerable file path):")
+    print_green("===========")
+    for target in targeturl_3:
+        print(target)
+        num_3 += 1 #취약한 파일 경로 수 파악
+    if num_3 == 0:
+        targeturl_3 = "          -          "    
+
+    # num_3 추출
+    print_green("\nnum(Number of vulnerable file paths):")
+    print_green("===========")
+    print(num_3)
+
+    # risk_3 데이터 추출
+    risk_3 = 'Low'
+    risk_order = {'High':0, 'Medium':1, 'Low':2}
+    print_green("\nrisk:")
+    print_green("===========")
+    for line in extracted_info.split('\n'):
+        if line.startswith("Risk: "):
+            extracted_risk = line[6:].strip()
+            if risk_order[extracted_risk] < risk_order[risk_3]:
+                risk_3 = extracted_risk
+    print(risk_3)
+
+    # inspectionurl_3 추출
+    inspectionurl_3 = set()
+    for line in extracted_info.split('\n'):
+        if line.startswith("Inspection_url: "):
+            inspectionurl_3.add(line[16:])
+    inspectionurl_3 = list(inspectionurl_3)
+    print_green("\ninspection_url(Inspection url path):")
+    print_green("===========")
+    for inspection in inspectionurl_3:
+        print(inspection)
+
+    # detailpayload_3 추출
+    detailpayload_3s = set()
+    detail_3 = 0
+    for line in extracted_info.split('\n'):
+        if line.startswith("Detail payload: "):
+            detailpayload_3s.add(line[16:])
+    detailpayload_3 = list(detailpayload_3s)
+    print_green("\ndetailpayload(Performance Indicators by Inspection Item):")
+    print_green("===========")
+    for detail in detailpayload_3:
+        if detail:
+            print(detail)
+            detail_3 += 1
+    if detail_3 == 0:
+        detailpayload_3 = "          -          "
         
+
+    return payload_3, category_3, num_3, risk_3, targeturl_3, inspectionurl_3, detailpayload_3
+
+def inspection_result(url, payload, category, num, risk, targeturl, inspectionurl, detailpayload):
+    print_green("url:\n======================")
+    print(url)
+    print_green("\npayload:\n======================")
+    print(payload)
+    print_green("\ncategory:\n======================")
+    print(category)
+    print_green("\nnum:\n======================")
+    print(num)
+    print_green("\nrisk:\n======================")
+    print(risk)
+    print_green("\ntargeturl:\n======================")
+    print(targeturl)
+    print_green("\ninspectionurl:\n======================")
+    print(inspectionurl)
+    print_green("\ndetailpayload:\n======================")
+    print(detailpayload)    
 
 if __name__ == '__main__':
     print_blue("\n==================================================================================\n")
@@ -277,51 +398,26 @@ if __name__ == '__main__':
     
     ### 점검 시작 ###
     # 점검항목1: SQL 인젝션(SQL Injection)
-    # payload_1, category_1, num_1, risk_1, targeturl_1, inspectionurl_1, detailpayload_1 = sql_injection(url, check_url)
+    payload_1, category_1, num_1, risk_1, targeturl_1, inspectionurl_1, detailpayload_1 = sql_injection(url, check_url)
     
     # 점검항목2: 크로스사이트스크립트(XSS)
-    # payload_2, category_2, num_2, risk_2, targeturl_2, inspectionurl_2, detailpayload_2 = xss(url, check_url, identi_paths)
+    payload_2, category_2, num_2, risk_2, targeturl_2, inspectionurl_2, detailpayload_2 = xss(url, check_url, identi_paths)
     
     # 점검항목3: 디렉토리 트레버셜(Directory Traversal)
-    directory_traversal(url, check_url, identi_paths)
+    payload_3, category_3, num_3, risk_3, targeturl_3, inspectionurl_3, detailpayload_3 = directory_traversal(url, check_url, identi_paths)
     #################
 
     ### 점검 결과 ###
     # 1: SQL 인젝션(SQL Injection): url, payload_1, category_1, num_1, risk_1, targeturl_1, inspectionurl_1, detailpayload_1
-    # print_blue("\n[*] SQL Injection 점검 결과")
-    # print_green("url:\n===========")
-    # print(url)
-    # print_green("\npayload_1:\n===========")
-    # print(payload_1)
-    # print_green("\ncategory_1:\n===========")
-    # print(category_1)
-    # print_green("\nnum_1:\n===========")
-    # print(num_1)
-    # print_green("\nrisk_1:\n===========")
-    # print(risk_1)
-    # print_green("\ntargeturl_1:\n===========")
-    # print(targeturl_1)
-    # print_green("\ninspectionurl_1:\n===========")
-    # print(inspectionurl_1)
-    # print_green("\ndetailpayload_1:\n===========")
-    # print(detailpayload_1)
+    print_blue("\n[*] SQL Injection 점검 결과")
+    inspection_result(url, payload_1, category_1, num_1, risk_1, targeturl_1, inspectionurl_1, detailpayload_1)
+    
     # 2: 크로스사이트스크립팅(XSS): url, payload_2, category_2, num_2, risk_2, targeturl_2, inspectionurl_2, detailpayload_2
-    # print_blue("\n[*] XSS 점검 결과")
-    # print_green("url:\n===========")
-    # print(url)
-    # print_green("\npayload_2:\n===========")
-    # print(payload_2)
-    # print_green("\ncategory_2:\n===========")
-    # print(category_2)
-    # print_green("\nnum_2:\n===========")
-    # print(num_2)
-    # print_green("\nrisk_2:\n===========")
-    # print(risk_2)
-    # print_green("\ntargeturl_2:\n===========")
-    # print(targeturl_2)
-    # print_green("\ninspectionurl_2:\n===========")
-    # print(inspectionurl_2)
-    # print_green("\ndetailpayload_2:\n===========")
-    # print(detailpayload_2)    
+    print_blue("\n[*] XSS 점검 결과")
+    inspection_result(url, payload_2, category_2, num_2, risk_2, targeturl_2, inspectionurl_2, detailpayload_2)
+
+    # 3: 데렉토리 트레버셜(Directory Traversal): url, payload_3, category_3, num_3, risk_3, targeturl_3, inspectionurl_3, detailpayload_3
+    print_blue("\n[*] Directory Traversal 점검 결과")
+    inspection_result(url, payload_3, category_3, num_3, risk_3, targeturl_3, inspectionurl_3, detailpayload_3)
     #################
     
