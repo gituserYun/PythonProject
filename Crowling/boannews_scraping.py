@@ -1,7 +1,6 @@
 # Web Site : https://www.boannews.com/media/t_list.asp , https://www.boannews.com/search/news_hash.asp?find=%BB%E7%B0%C7%BB%E7%B0%ED
 import requests
 import bs4
-import certifi
 
 # 해당 주소로 요청 
 # test-url: "http://192.168.107.128/login.jsp"

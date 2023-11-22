@@ -73,280 +73,292 @@ def dirScan(url):
 
     return directory_names, file_names, identi_paths
 
-def sql_injection(url, check_url):
-    urls_json = json.dumps(check_url)
-    print_blue("\n[*] SQL Injection 점검")
-    # Windows에서 동작
-    # subprocess.call(['python', '../VulnerabilityList/SQLI/sql_injection.py', url, urls_json])
-    output = subprocess.run(['python', '../VulnerabilityList/SQLI/sql_injection.py' ,url ,urls_json], capture_output=True, text=True, check=True)
-    extracted_info = output.stdout
+# def sql_injection(url, check_url):
+#     urls_json = json.dumps(check_url)
+#     print_blue("\n[*] SQL Injection 점검")
+#     # Windows에서 동작
+#     # subprocess.call(['python', '../VulnerabilityList/SQLI/sql_injection.py', url, urls_json])
+#     output = subprocess.run(['python', '../VulnerabilityList/SQLI/sql_injection.py' ,url ,urls_json], capture_output=True, text=True, check=True)
+#     extracted_info = output.stdout
 
-    # payload_1 추출
-    cnt = 0
-    payload_1s = set()
-    for line in extracted_info.split('\n'):
-        if line.startswith("Attack Detected: "):
-            payload_1s.add(line[17:])
-    payload_1 = list(payload_1s)
-    print_green("\npayload(Payload Code):")
-    print_green("===========")
-    for code in payload_1:
-        print(code)
-        cnt += 1
-    print_grey(f"payload cnt: {cnt}")
-    if cnt == 0:
-        payload_1 = "          -          "    
+#     # payload_1 추출
+#     cnt = 0
+#     payload_1s = set()
+#     for line in extracted_info.split('\n'):
+#         if line.startswith("Attack Detected: "):
+#             payload_1s.add(line[17:])
+#     payload_1 = list(payload_1s)
+#     print_green("\npayload(Payload Code):")
+#     print_green("===========")
+#     for code in payload_1:
+#         print(code)
+#         cnt += 1
+#     print_grey(f"payload cnt: {cnt}")
+#     # if cnt == 0:
+#     #     payload_1 = "          -          "    
 
-    # category_1 추출
-    category_1 = "SQL 인젝션(SQL Injection)"
-    print_green("\ncategory:")
-    print_green("===========")
-    print(category_1)
+#     # category_1 추출
+#     category_1 = "SQL 인젝션(SQL Injection)"
+#     print_green("\ncategory:")
+#     print_green("===========")
+#     print(category_1)
 
-    # targeturl_1 추출
-    targeturl_1s = set()
-    num_1 = 0
-    for line in extracted_info.split('\n'):
-        if line.startswith("Target url: "):
-            targeturl_1s.add(line[12:])
-    targeturl_1 = list(targeturl_1s)
-    print_green("\ntargeturl(Vulnerable file path):")
-    print_green("===========")
-    for target in targeturl_1:
-        print(target)
-        num_1 += 1 #취약한 파일 경로 수 파악
-    if num_1 == 0:
-        targeturl_1 = "          -          "    
+#     # targeturl_1 추출
+#     targeturl_1s = set()
+#     num_1 = 0
+#     for line in extracted_info.split('\n'):
+#         if line.startswith("Target url: "):
+#             targeturl_1s.add(line[12:])
+#     targeturl_1 = list(targeturl_1s)
+#     print_green("\ntargeturl(Vulnerable file path):")
+#     print_green("===========")
+#     for target in targeturl_1:
+#         print(target)
+#         num_1 += 1 #취약한 파일 경로 수 파악
+#     # if num_1 == 0:
+#     #     targeturl_1 = "          -          "    
 
-    # num_1 추출
-    print_green("\nnum(Number of vulnerable file paths):")
-    print_green("===========")
-    print(num_1)
+#     # num_1 추출
+#     print_green("\nnum(Number of vulnerable file paths):")
+#     print_green("===========")
+#     print(num_1)
 
-    # risk_1 데이터 추출
-    risk_1 = 'Low'
-    risk_order = {'High':0, 'Medium':1, 'Low':2}
-    print_green("\nrisk:")
-    print_green("===========")
-    for line in extracted_info.split('\n'):
-        if line.startswith("Risk: "):
-            extracted_risk = line[6:].strip()
-            if risk_order[extracted_risk] < risk_order[risk_1]:
-                risk_1 = extracted_risk
-    print(risk_1)
+#     # risk_1 데이터 추출
+#     risk_1 = 'Low'
+#     risk_order = {'High':0, 'Medium':1, 'Low':2}
+#     print_green("\nrisk:")
+#     print_green("===========")
+#     for line in extracted_info.split('\n'):
+#         if line.startswith("Risk: "):
+#             extracted_risk = line[6:].strip()
+#             if risk_order[extracted_risk] < risk_order[risk_1]:
+#                 risk_1 = extracted_risk
+#     print(risk_1)
 
-    # inspectionurl_1 추출
-    inspectionurl_1s = set()
-    for line in extracted_info.split('\n'):
-        if line.startswith("Inspection_url: "):
-            inspectionurl_1s.add(line[16:])
-    inspectionurl_1 = list(inspectionurl_1s)
-    print_green("\ninspection_url(Inspection url path):")
-    print_green("===========")
-    for inspection in inspectionurl_1:
-        print(inspection)
+#     # inspectionurl_1 추출
+#     inspectionurl_1s = set()
+#     for line in extracted_info.split('\n'):
+#         if line.startswith("Inspection_url: "):
+#             inspectionurl_1s.add(line[16:])
+#     inspectionurl_1 = list(inspectionurl_1s)
+#     print_green("\ninspection_url(Inspection url path):")
+#     print_green("===========")
+#     for inspection in inspectionurl_1:
+#         print(inspection)
 
-    # detailpayload_1 추출
-    detailpayload_1s = set()
-    detail_1 = 0
-    for line in extracted_info.split('\n'):
-        if line.startswith("Detail payload: "):
-            detailpayload_1s.add(line[16:])
-    detailpayload_1 = list(detailpayload_1s)
-    print_green("\ndetailpayload(Performance Indicators by Inspection Item):")
-    print_green("===========")
-    for detail in detailpayload_1:
-        if detail:
-            print(detail)
-            detail_1 += 1
-    if detail_1 == 0:
-        detailpayload_1 = "          -          "
+#     # detailpayload_1 추출
+#     detailpayload_1s = set()
+#     detail_1 = 0
+#     for line in extracted_info.split('\n'):
+#         if line.startswith("Detail payload: "):
+#             detailpayload_1s.add(line[16:])
+#     detailpayload_1 = list(detailpayload_1s)
+#     print_green("\ndetailpayload(Performance Indicators by Inspection Item):")
+#     print_green("===========")
+#     for detail in detailpayload_1:
+#         if detail:
+#             print(detail)
+#             detail_1 += 1
+#     # if detail_1 == 0:
+#     #     detailpayload_1 = "          -          "
 
-    return payload_1, category_1, num_1, risk_1, targeturl_1, inspectionurl_1, detailpayload_1
+#     return payload_1, category_1, num_1, risk_1, targeturl_1, inspectionurl_1, detailpayload_1
 
-def xss(url, check_url, identi_paths):
-    urls_json = json.dumps(check_url)
-    identi_json = json.dumps(identi_paths)
-    print_blue("\n[*] XSS 점검")
-    # subprocess.call(['python', '../VulnerabilityList/XSS/xss.py', url, urls_json, identi_json])
-    output = subprocess.run(['python', '../VulnerabilityList/XSS/xss.py' ,url ,urls_json, identi_json], capture_output=True, text=True, check=True)
-    extracted_info = output.stdout
+# def xss(url, check_url, identi_paths):
+#     urls_json = json.dumps(check_url)
+#     identi_json = json.dumps(identi_paths)
+#     print_blue("\n[*] XSS 점검")
+#     # subprocess.call(['python', '../VulnerabilityList/XSS/xss.py', url, urls_json, identi_json])
+#     output = subprocess.run(['python', '../VulnerabilityList/XSS/xss.py' ,url ,urls_json, identi_json], capture_output=True, text=True, check=True)
+#     extracted_info = output.stdout
     
-    # payload_2 추출
-    cnt = 0
-    payload_2s = set()
-    for line in extracted_info.split('\n'):
-        if line.startswith("Attack Detected: "):
-            payload_2s.add(line[17:])
-    payload_2 = list(payload_2s)
-    print_green("\npayload(Payload Code):")
-    print_green("===========")
-    for code in payload_2:
-        print(code)
-        cnt += 1
-    print_grey(f"payload cnt: {cnt}")
-    if cnt == 0:
-        payload_2 = "          -          "    
+#     # payload_2 추출
+#     cnt = 0
+#     payload_2s = set()
+#     for line in extracted_info.split('\n'):
+#         if line.startswith("Attack Detected: "):
+#             payload_2s.add(line[17:])
+#     payload_2 = list(payload_2s)
+#     print_green("\npayload(Payload Code):")
+#     print_green("===========")
+#     for code in payload_2:
+#         print(code)
+#         cnt += 1
+#     print_grey(f"payload cnt: {cnt}")
+#     # if cnt == 0:
+#     #     payload_2 = "          -          "    
 
-    # category_2 추출
-    category_2 = "크로스사이트스크립팅(XSS)"
-    print_green("\ncategory:")
-    print_green("===========")
-    print(category_2)
+#     # category_2 추출
+#     category_2 = "크로스사이트스크립팅(XSS)"
+#     print_green("\ncategory:")
+#     print_green("===========")
+#     print(category_2)
 
-    # targeturl_2 추출
-    targeturl_2s = set()
-    num_2 = 0
-    for line in extracted_info.split('\n'):
-        if line.startswith("Target url: "):
-            targeturl_2s.add(line[12:])
-    targeturl_2 = list(targeturl_2s)
-    print_green("\ntargeturl(Vulnerable file path):")
-    print_green("===========")
-    for target in targeturl_2:
-        print(target)
-        num_2 += 1 #취약한 파일 경로 수 파악    
-    if num_2 == 0:
-        targeturl_2 = "          -          "
+#     # targeturl_2 추출
+#     targeturl_2s = set()
+#     num_2 = 0
+#     for line in extracted_info.split('\n'):
+#         if line.startswith("Target url: "):
+#             targeturl_2s.add(line[12:])
+#     targeturl_2 = list(targeturl_2s)
+#     print_green("\ntargeturl(Vulnerable file path):")
+#     print_green("===========")
+#     for target in targeturl_2:
+#         print(target)
+#         num_2 += 1 #취약한 파일 경로 수 파악    
+#     # if num_2 == 0:
+#     #     targeturl_2 = "          -          "
 
-    # num_2 추출
-    print_green("\nnum(Number of vulnerable file paths):")
-    print_green("===========")
-    print(num_2)
+#     # num_2 추출
+#     print_green("\nnum(Number of vulnerable file paths):")
+#     print_green("===========")
+#     print(num_2)
 
-    # risk_2 데이터 추출
-    risk_2 = 'Low'
-    risk_order = {'High':0, 'Medium':1, 'Low':2}
-    print_green("\nrisk:")
-    print_green("===========")
-    for line in extracted_info.split('\n'):
-        if line.startswith("Risk: "):
-            extracted_risk = line[6:].strip()
-            if risk_order[extracted_risk] < risk_order[risk_2]:
-                risk_2 = extracted_risk
-    print(risk_2)
+#     # risk_2 데이터 추출
+#     risk_2 = 'Low'
+#     risk_order = {'High':0, 'Medium':1, 'Low':2}
+#     print_green("\nrisk:")
+#     print_green("===========")
+#     for line in extracted_info.split('\n'):
+#         if line.startswith("Risk: "):
+#             extracted_risk = line[6:].strip()
+#             if risk_order[extracted_risk] < risk_order[risk_2]:
+#                 risk_2 = extracted_risk
+#     print(risk_2)
 
-    # inspectionurl_2 추출
-    inspectionurl_2s = set()
-    for line in extracted_info.split('\n'):
-        if line.startswith("Inspection_url: "):
-            inspectionurl_2s.add(line[16:])
-    inspectionurl_2 = list(inspectionurl_2s)
-    print_green("\nInspection_url(Inspection url path):")
-    print_green("===========")
-    for inspection in inspectionurl_2:
-        print(inspection)
+#     # inspectionurl_2 추출
+#     inspectionurl_2s = set()
+#     for line in extracted_info.split('\n'):
+#         if line.startswith("Inspection_url: "):
+#             inspectionurl_2s.add(line[16:])
+#     inspectionurl_2 = list(inspectionurl_2s)
+#     print_green("\nInspection_url(Inspection url path):")
+#     print_green("===========")
+#     for inspection in inspectionurl_2:
+#         print(inspection)
 
-    # detailpayload_2 추출
-    detailpayload_2s = set()
-    detail_2 = 0
-    for line in extracted_info.split('\n'):
-        if line.startswith("Detail payload: "):
-            detailpayload_2s.add(line[16:])
-    detailpayload_2 = list(detailpayload_2s)
-    print_green("\nDetailpayload(Performance Indicators by Inspection Item):")
-    print_green("===========")
-    for detail in detailpayload_2:
-        if detail:
-            print(detail)
-            detail_2 += 1
-    if detail_2 == 0:
-        detailpayload_2 = "          -          "
+#     # detailpayload_2 추출
+#     detailpayload_2s = set()
+#     # detail_2 = 0
+#     for line in extracted_info.split('\n'):
+#         if line.startswith("Detail payload: "):
+#             detailpayload_2s.add(line[16:])
+#     detailpayload_2 = list(detailpayload_2s)
+#     print_green("\nDetailpayload(Performance Indicators by Inspection Item):")
+#     print_green("===========")
+#     for detail in detailpayload_2:
+#         if detail:
+#             print(detail)
+#     #         detail_2 += 1
+#     # if detail_2 == 0:
+#     #     detailpayload_2 = "          -          "
     
-    return payload_2, category_2, num_2, risk_2, targeturl_2, inspectionurl_2, detailpayload_2
+#     return payload_2, category_2, num_2, risk_2, targeturl_2, inspectionurl_2, detailpayload_2
 
-def directory_traversal(url, check_url, identi_paths):
-    urls_json = json.dumps(check_url)
-    identi_json = json.dumps(identi_paths)
-    print_blue("\n[*] Directory Traversal 점검")
-    # Windows에서 동작
-    # subprocess.call(['python', '../VulnerabilityList/DT/directory_traversal.py', url, urls_json, identi_json])
-    output = subprocess.run(['python', '../VulnerabilityList/DT/directory_traversal.py' ,url ,urls_json, identi_json], capture_output=True, text=True, check=True)        
-    extracted_info = output.stdout
+# def directory_traversal(url, check_url, identi_paths):
+#     urls_json = json.dumps(check_url)
+#     identi_json = json.dumps(identi_paths)
+#     print_blue("\n[*] Directory Traversal 점검")
+#     # Windows에서 동작
+#     # subprocess.call(['python', '../VulnerabilityList/DT/directory_traversal.py', url, urls_json, identi_json])
+#     output = subprocess.run(['python', '../VulnerabilityList/DT/directory_traversal.py' ,url ,urls_json, identi_json], capture_output=True, text=True, check=True)        
+#     extracted_info = output.stdout
 
-    # payload_3 추출
-    cnt = 0
-    payload_3s = set()
-    for line in extracted_info.split('\n'):
-        if line.startswith("Attack Detected: "):
-            payload_3s.add(line[17:])
-    payload_3 = list(payload_3s)
-    print_green("\npayload(Payload Code):")
-    print_green("===========")
-    for code in payload_3:
-        print(code)
-        cnt += 1
-    print_grey(f"payload cnt: {cnt}")
-    if cnt == 0:
-        payload_3 = "          -          "
+#     # payload_3 추출
+#     cnt = 0
+#     payload_3s = set()
+#     for line in extracted_info.split('\n'):
+#         if line.startswith("Attack Detected: "):
+#             payload_3s.add(line[17:])
+#     payload_3 = list(payload_3s)
+#     print_green("\npayload(Payload Code):")
+#     print_green("===========")
+#     for code in payload_3:
+#         print(code)
+#         cnt += 1
+#     print_grey(f"payload cnt: {cnt}")
+#     # if cnt == 0:
+#     #     payload_3 = "          -          "
 
-    # category_3 추출
-    category_3 = "디렉토리 트레버설(Directory Traversal)"
-    print_green("\ncategory:")
-    print_green("===========")
-    print(category_3)
+#     # category_3 추출
+#     category_3 = "디렉토리 트레버설(Directory Traversal)"
+#     print_green("\ncategory:")
+#     print_green("===========")
+#     print(category_3)
 
-    # targeturl_3 추출
-    targeturl_3s = set()
-    num_3 = 0
-    for line in extracted_info.split('\n'):
-        if line.startswith("Target url: "):
-            targeturl_3s.add(line[12:])
-    targeturl_3 = list(targeturl_3s)
-    print_green("\ntargeturl(Vulnerable file path):")
-    print_green("===========")
-    for target in targeturl_3:
-        print(target)
-        num_3 += 1 #취약한 파일 경로 수 파악
-    if num_3 == 0:
-        targeturl_3 = "          -          "    
+#     # targeturl_3 추출
+#     targeturl_3s = set()
+#     num_3 = 0
+#     for line in extracted_info.split('\n'):
+#         if line.startswith("Target url: "):
+#             targeturl_3s.add(line[12:])
+#     targeturl_3 = list(targeturl_3s)
+#     print_green("\ntargeturl(Vulnerable file path):")
+#     print_green("===========")
+#     for target in targeturl_3:
+#         print(target)
+#         num_3 += 1 #취약한 파일 경로 수 파악
+#     # if num_3 == 0:
+#     #     targeturl_3 = "          -          "    
 
-    # num_3 추출
-    print_green("\nnum(Number of vulnerable file paths):")
-    print_green("===========")
-    print(num_3)
+#     # num_3 추출
+#     print_green("\nnum(Number of vulnerable file paths):")
+#     print_green("===========")
+#     print(num_3)
 
-    # risk_3 데이터 추출
-    risk_3 = 'Low'
-    risk_order = {'High':0, 'Medium':1, 'Low':2}
-    print_green("\nrisk:")
-    print_green("===========")
-    for line in extracted_info.split('\n'):
-        if line.startswith("Risk: "):
-            extracted_risk = line[6:].strip()
-            if risk_order[extracted_risk] < risk_order[risk_3]:
-                risk_3 = extracted_risk
-    print(risk_3)
+#     # risk_3 데이터 추출
+#     risk_3 = 'Low'
+#     risk_order = {'High':0, 'Medium':1, 'Low':2}
+#     print_green("\nrisk:")
+#     print_green("===========")
+#     for line in extracted_info.split('\n'):
+#         if line.startswith("Risk: "):
+#             extracted_risk = line[6:].strip()
+#             if risk_order[extracted_risk] < risk_order[risk_3]:
+#                 risk_3 = extracted_risk
+#     print(risk_3)
 
-    # inspectionurl_3 추출
-    inspectionurl_3 = set()
-    for line in extracted_info.split('\n'):
-        if line.startswith("Inspection_url: "):
-            inspectionurl_3.add(line[16:])
-    inspectionurl_3 = list(inspectionurl_3)
-    print_green("\ninspection_url(Inspection url path):")
-    print_green("===========")
-    for inspection in inspectionurl_3:
-        print(inspection)
+#     # inspectionurl_3 추출
+#     inspectionurl_3 = set()
+#     for line in extracted_info.split('\n'):
+#         if line.startswith("Inspection_url: "):
+#             inspectionurl_3.add(line[16:])
+#     inspectionurl_3 = list(inspectionurl_3)
+#     print_green("\ninspection_url(Inspection url path):")
+#     print_green("===========")
+#     for inspection in inspectionurl_3:
+#         print(inspection)
 
-    # detailpayload_3 추출
-    detailpayload_3s = set()
-    detail_3 = 0
-    for line in extracted_info.split('\n'):
-        if line.startswith("Detail payload: "):
-            detailpayload_3s.add(line[16:])
-    detailpayload_3 = list(detailpayload_3s)
-    print_green("\ndetailpayload(Performance Indicators by Inspection Item):")
-    print_green("===========")
-    for detail in detailpayload_3:
-        if detail:
-            print(detail)
-            detail_3 += 1
-    if detail_3 == 0:
-        detailpayload_3 = "          -          "
+#     # detailpayload_3 추출
+#     detailpayload_3s = set()
+#     # detail_3 = 0
+#     for line in extracted_info.split('\n'):
+#         if line.startswith("Detail payload: "):
+#             detailpayload_3s.add(line[16:])
+#     detailpayload_3 = list(detailpayload_3s)
+#     print_green("\ndetailpayload(Performance Indicators by Inspection Item):")
+#     print_green("===========")
+#     for detail in detailpayload_3:
+#         if detail:
+#             print(detail)
+#             # detail_3 += 1
+#     # if detail_3 == 0:
+#     #     detailpayload_3 = "          -          "
         
+#     return payload_3, category_3, num_3, risk_3, targeturl_3, inspectionurl_3, detailpayload_3
 
-    return payload_3, category_3, num_3, risk_3, targeturl_3, inspectionurl_3, detailpayload_3
+# def file_upload(url, check_url, identi_paths):
+#     urls_json = json.dumps(check_url)
+#     identi_json = json.dumps(identi_paths)
+#     print_blue("\n[*] File Upload 점검")
+#     subprocess.call(['python', '../VulnerabilityList/FU/file_upload.py', url, urls_json, identi_json])
+
+def file_download(url, check_url, identi_path):
+    urls_json = json.dumps(check_url)
+    identi_json = json.dumps(identi_paths)
+    print_blue("\n[*] File Download 점검")
+    subprocess.call(['python', '../VulnerabilityList/FD/file_download.py', url, urls_json, identi_json])    
+
 
 def inspection_result(url, payload, category, num, risk, targeturl, inspectionurl, detailpayload):
     print_green("url:\n======================")
@@ -397,27 +409,33 @@ if __name__ == '__main__':
         check_url.append(full_url)
     
     ### 점검 시작 ###
-    # 점검항목1: SQL 인젝션(SQL Injection)
-    payload_1, category_1, num_1, risk_1, targeturl_1, inspectionurl_1, detailpayload_1 = sql_injection(url, check_url)
+    # # 점검항목1: SQL 인젝션(SQL Injection)
+    # payload_1, category_1, num_1, risk_1, targeturl_1, inspectionurl_1, detailpayload_1 = sql_injection(url, check_url)
     
-    # 점검항목2: 크로스사이트스크립트(XSS)
-    payload_2, category_2, num_2, risk_2, targeturl_2, inspectionurl_2, detailpayload_2 = xss(url, check_url, identi_paths)
+    # # 점검항목2: 크로스사이트스크립트(XSS)
+    # payload_2, category_2, num_2, risk_2, targeturl_2, inspectionurl_2, detailpayload_2 = xss(url, check_url, identi_paths)
     
-    # 점검항목3: 디렉토리 트레버셜(Directory Traversal)
-    payload_3, category_3, num_3, risk_3, targeturl_3, inspectionurl_3, detailpayload_3 = directory_traversal(url, check_url, identi_paths)
+    # # 점검항목3: 디렉토리 트레버셜(Directory Traversal)
+    # payload_3, category_3, num_3, risk_3, targeturl_3, inspectionurl_3, detailpayload_3 = directory_traversal(url, check_url, identi_paths)
+
+    # # 점검항목4: 파일 업로드(File Upload)
+    # file_upload(url, check_url, identi_paths)
+
+    # 점검항목5: 파일 다운로드(File Download)
+    file_download(url, check_url, identi_paths)
     #################
 
     ### 점검 결과 ###
-    # 1: SQL 인젝션(SQL Injection): url, payload_1, category_1, num_1, risk_1, targeturl_1, inspectionurl_1, detailpayload_1
-    print_blue("\n[*] SQL Injection 점검 결과")
-    inspection_result(url, payload_1, category_1, num_1, risk_1, targeturl_1, inspectionurl_1, detailpayload_1)
+    # # 1: SQL 인젝션(SQL Injection): url, payload_1, category_1, num_1, risk_1, targeturl_1, inspectionurl_1, detailpayload_1
+    # print_blue("\n[*] SQL Injection 점검 결과")
+    # inspection_result(url, payload_1, category_1, num_1, risk_1, targeturl_1, inspectionurl_1, detailpayload_1)
     
-    # 2: 크로스사이트스크립팅(XSS): url, payload_2, category_2, num_2, risk_2, targeturl_2, inspectionurl_2, detailpayload_2
-    print_blue("\n[*] XSS 점검 결과")
-    inspection_result(url, payload_2, category_2, num_2, risk_2, targeturl_2, inspectionurl_2, detailpayload_2)
+    # # 2: 크로스사이트스크립팅(XSS): url, payload_2, category_2, num_2, risk_2, targeturl_2, inspectionurl_2, detailpayload_2
+    # print_blue("\n[*] XSS 점검 결과")
+    # inspection_result(url, payload_2, category_2, num_2, risk_2, targeturl_2, inspectionurl_2, detailpayload_2)
 
-    # 3: 데렉토리 트레버셜(Directory Traversal): url, payload_3, category_3, num_3, risk_3, targeturl_3, inspectionurl_3, detailpayload_3
-    print_blue("\n[*] Directory Traversal 점검 결과")
-    inspection_result(url, payload_3, category_3, num_3, risk_3, targeturl_3, inspectionurl_3, detailpayload_3)
+    # # 3: 데렉토리 트레버셜(Directory Traversal): url, payload_3, category_3, num_3, risk_3, targeturl_3, inspectionurl_3, detailpayload_3
+    # print_blue("\n[*] Directory Traversal 점검 결과")
+    # inspection_result(url, payload_3, category_3, num_3, risk_3, targeturl_3, inspectionurl_3, detailpayload_3)
     #################
     
