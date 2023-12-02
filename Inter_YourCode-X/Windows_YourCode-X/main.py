@@ -347,17 +347,17 @@ def dirScan(url):
         
 #     return payload_3, category_3, num_3, risk_3, targeturl_3, inspectionurl_3, detailpayload_3
 
+def file_download(url, check_url, identi_paths):
+    urls_json = json.dumps(check_url)
+    identi_json = json.dumps(identi_paths)
+    print_blue("\n[*] File Download 점검")
+    subprocess.call(['python', '../VulnerabilityList/FD/file_download.py', url, urls_json, identi_json]) 
+  
 # def file_upload(url, check_url, identi_paths):
 #     urls_json = json.dumps(check_url)
 #     identi_json = json.dumps(identi_paths)
 #     print_blue("\n[*] File Upload 점검")
-#     subprocess.call(['python', '../VulnerabilityList/FU/file_upload.py', url, urls_json, identi_json])
-
-def file_download(url, check_url, identi_path):
-    urls_json = json.dumps(check_url)
-    identi_json = json.dumps(identi_paths)
-    print_blue("\n[*] File Download 점검")
-    subprocess.call(['python', '../VulnerabilityList/FD/file_download.py', url, urls_json, identi_json])    
+#     subprocess.call(['python', '../VulnerabilityList/FU/file_upload.py', url, urls_json, identi_json])   
 
 
 def inspection_result(url, payload, category, num, risk, targeturl, inspectionurl, detailpayload):
