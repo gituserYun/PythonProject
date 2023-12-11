@@ -352,7 +352,7 @@ def file_download(url, check_url, identi_paths):
     identi_json = json.dumps(identi_paths)
     print_blue("\n[*] File Download 점검")
     # subprocess.call(['python', '../VulnerabilityList/FD/file_download.py', url, urls_json, identi_json]) 
-    output = subprocess.run(['python', '../VulnerabilityList/FD/file_download.py' ,url ,urls_json, identi_json], capture_output=True, text=True, check=True)        
+    output = subprocess.run(['python', '../VulnerabilityList/FD/file_download.py' ,url ,urls_json, identi_json], capture_output=True, text=True, check=True)
     extracted_info = output.stdout
     
     # payload_4 추출
@@ -443,11 +443,89 @@ def file_download(url, check_url, identi_paths):
 
     return payload_4, category_4, num_4, risk_4, targeturl_4, inspectionurl_4, detailpayload_4, e_path
 
-# def file_upload(url, check_url, identi_paths):
-#     urls_json = json.dumps(check_url)
-#     identi_json = json.dumps(identi_paths)
-#     print_blue("\n[*] File Upload 점검")
-#     subprocess.call(['python', '../VulnerabilityList/FU/file_upload.py', url, urls_json, identi_json])   
+def file_upload(url, check_url, identi_paths, e_path):
+    urls_json = json.dumps(check_url)
+    identi_json = json.dumps(identi_paths)
+    e_path_json = json.dumps(e_path)
+    print_blue("\n[*] File Upload 점검")
+    # subprocess.call(['python', '../VulnerabilityList/FU/file_upload.py', url, urls_json, identi_json, e_path_json])
+    output = subprocess.run(['python', '../VulnerabilityList/FU/file_upload.py' ,url ,urls_json, identi_json, e_path_json], capture_output=True, text=True, check=True)
+    extracted_info = output.stdout
+    
+    # payload_5 추출
+    cnt = 0
+    payload_5s = set()
+    for line in extracted_info.split('\n'):
+        if line.startswith("Attack Detected: "):
+            payload_5s.add(line[17:])
+    payload_5 = list(payload_5s)
+    print_green("\npayload(Payload Code):")
+    print_green("======================")
+    for code in payload_5:
+        print(code)
+        cnt += 1
+    print_grey(f"payload cnt: {cnt}")
+
+    # category_5 추출
+    category_5 = "파일 업로드(File Upload)"
+    print_green("\ncategory:")
+    print_green("======================")
+    print(category_5)
+
+    # targeturl_5 추출
+    targeturl_5s = set()
+    num_5 = 0
+    for line in extracted_info.split('\n'):
+        if line.startswith("Target url: "):
+            targeturl_5s.add(line[12:])
+    targeturl_5 = list(targeturl_5s)
+    print_green("\ntargeturl(Vulnerable file path):")
+    print_green("======================")
+    for target in targeturl_5:
+        print(target)
+        num_5 += 1 #취약한 파일 경로 수 파악
+
+    # num_5 추출
+    print_green("\nnum(Number of vulnerable file paths):")
+    print_green("======================")
+    print(num_5)
+
+    # risk_5 데이터 추출
+    risk_5 = 'Low'
+    risk_order = {'High':0, 'Medium':1, 'Low':2}
+    print_green("\nrisk:")
+    print_green("======================")
+    for line in extracted_info.split('\n'):
+        if line.startswith("Risk: "):
+            extracted_risk = line[6:].strip()
+            if risk_order[extracted_risk] < risk_order[risk_5]:
+                risk_5 = extracted_risk
+    print(risk_5)
+
+    # inspectionurl_5 추출
+    inspectionurl_5s = set()
+    for line in extracted_info.split('\n'):
+        if line.startswith("Inspection_url: "):
+            inspectionurl_5s.add(line[16:])
+    inspectionurl_5 = list(inspectionurl_5s)
+    print_green("\ninspection_url(Inspection url path):")
+    print_green("======================")
+    for inspection in inspectionurl_5:
+        print(inspection)
+
+    # detailpayload_5 추출
+    detailpayload_5s = set()
+    for line in extracted_info.split('\n'):
+        if line.startswith("Detail payload: "):
+            detailpayload_5s.add(line[16:])
+    detailpayload_5 = list(detailpayload_5s)
+    print_green("\ndetailpayload(Performance Indicators by Inspection Item):")
+    print_green("======================")
+    for detail in detailpayload_5:
+        if detail:
+            print(detail)
+    
+    return payload_5, category_5, num_5, risk_5, targeturl_5, inspectionurl_5, detailpayload_5
 
 
 def inspection_result(url, payload, category, num, risk, targeturl, inspectionurl, detailpayload):
@@ -512,7 +590,7 @@ if __name__ == '__main__':
     payload_4, category_4, num_4, risk_4, targeturl_4, inspectionurl_4, detailpayload_4, e_path = file_download(url, check_url, identi_paths)
 
     # # 점검항목5: 파일 업로드(File Upload)
-    # file_upload(url, check_url, identi_paths)
+    payload_5, category_5, num_5, risk_5, targeturl_5, inspectionurl_5, detailpayload_5 = file_upload(url, check_url, identi_paths, e_path)
     #################
 
     ### 점검 결과 ###
@@ -532,6 +610,12 @@ if __name__ == '__main__':
     print_blue("\n[*] File Download 점검 결과")
     inspection_result(url, payload_4, category_4, num_4, risk_4, targeturl_4, inspectionurl_4, detailpayload_4)
     print_yellow(f"\n=> Estimated file upload path: {e_path}")
+
+    # 5: 파일 업로드(File Upload): url, payload_5, category_5, num_5, risk_5, targeturl_5, inspectionurl_5, detailpayload_5
+    print_blue("\n[*] File Download 점검 결과")
+    inspection_result(url, payload_5, category_5, num_5, risk_5, targeturl_5, inspectionurl_5, detailpayload_5)
+
+
 
     #################
     
